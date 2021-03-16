@@ -4,11 +4,16 @@ import 'firebase/auth';
 import firebaseConfig from './firebase.config';
 import { useState } from 'react';
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app(); // if already initialized, use that one
+}
 
 function App() {
   const [user, setUser] = useState({});
   const provider = new firebase.auth.GoogleAuthProvider();
+  var fbProvider = new firebase.auth.FacebookAuthProvider();
 
   const handleGoogleSingIN = () => {
     firebase
@@ -31,10 +36,33 @@ function App() {
         console.log(errorCode, errorMessage);
       });
   };
+  const handleFacebookSingIN = () => {
+    firebase
+      .auth()
+      .signInWithPopup(fbProvider)
+      .then((result) => {
+        /** @type {firebase.auth.OAuthCredential} */
+        var credential = result.credential;
+        var accessToken = credential.accessToken;
+
+        var user = result.user;
+
+        console.log(user);
+        setUser(user);
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+        console.log(errorCode, errorMessage, email, credential);
+      });
+  };
   return (
     <div className="App">
       <button onClick={handleGoogleSingIN}>Sign In Using Google</button>
-      <h3>{user.email}</h3>
+      <button onClick={handleFacebookSingIN}>Sign In Using Facebook</button>
+      <h3>name : {user.displayName}</h3>
       <img src={user.photoURL} alt="" />
     </div>
   );
