@@ -13,7 +13,8 @@ if (!firebase.apps.length) {
 function App() {
   const [user, setUser] = useState({});
   const provider = new firebase.auth.GoogleAuthProvider();
-  var fbProvider = new firebase.auth.FacebookAuthProvider();
+  const fbProvider = new firebase.auth.FacebookAuthProvider();
+  const githubProvider = new firebase.auth.GithubAuthProvider();
 
   const handleGoogleSingIN = () => {
     firebase
@@ -58,10 +59,34 @@ function App() {
         console.log(errorCode, errorMessage, email, credential);
       });
   };
+  const handleGithubSingIN = () => {
+    console.log('hello');
+    firebase
+      .auth()
+      .signInWithPopup(githubProvider)
+      .then((result) => {
+        /** @type {firebase.auth.OAuthCredential} */
+        var credential = result.credential;
+
+        var token = credential.accessToken;
+
+        var user = result.user;
+        console.log('github user', user);
+        setUser(user);
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+        console.log(errorCode, errorMessage, email, credential);
+      });
+  };
   return (
     <div className="App">
       <button onClick={handleGoogleSingIN}>Sign In Using Google</button>
       <button onClick={handleFacebookSingIN}>Sign In Using Facebook</button>
+      <button onClick={handleGithubSingIN}>Sign In Using Github</button>
       <h3>name : {user.displayName}</h3>
       <img src={user.photoURL} alt="" />
     </div>
