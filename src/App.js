@@ -87,7 +87,8 @@ function App() {
       <button onClick={handleGoogleSingIN}>Sign In Using Google</button>
       <button onClick={handleFacebookSingIN}>Sign In Using Facebook</button>
       <button onClick={handleGithubSingIN}>Sign In Using Github</button>
-      <h3>name : {user.displayName}</h3>
+      <h3>use name : {user.displayName}</h3>
+      <h2>User Image</h2>
       <img src={user.photoURL} alt="" />
     </div>
   );
